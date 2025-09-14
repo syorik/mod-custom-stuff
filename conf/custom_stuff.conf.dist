@@ -3,4 +3,4 @@
 CustomStuff.Enable = 1
 CustomStuff.StartingGold = 500
 CustomStuff.StartingLevel = 15
-CustomStuff.LevelUpGold = 100
+CustomStuff.LevelUpGold = 250

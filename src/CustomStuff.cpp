@@ -30,6 +30,9 @@ public:
 
 private:
     const uint32 FROSTWEAVE_BAG = 41599;
+    const uint32 DEFAULT_STARTING_GOLD = 500;
+    const uint32 DEFAULT_STARTING_LEVEL = 15;
+    const uint32 DEFAULT_LEVEL_UP_GOLD = 250;
 
     void RestorePlayerResources(Player* player)
     {
@@ -40,21 +43,21 @@ private:
 
     void ApplyStartingBonuses(Player* player)
     {
-        player->ModifyMoney(sConfigMgr->GetOption<uint32>("CustomStuff.StartingGold", 500) * GOLD);
-        player->GiveLevel(sConfigMgr->GetOption<uint32>("CustomStuff.StartingLevel", 15));
+        player->ModifyMoney(sConfigMgr->GetOption<uint32>("CustomStuff.StartingGold", DEFAULT_STARTING_GOLD) * GOLD);
+        player->GiveLevel(sConfigMgr->GetOption<uint32>("CustomStuff.StartingLevel", DEFAULT_STARTING_LEVEL));
         player->AddItem(FROSTWEAVE_BAG, 4);
     }
 
     void SendCongratulationsMessage(Player* player)
     {
         std::ostringstream ss;
-        ss << "Congrats on Level " << static_cast<int>(player->GetLevel()) << " " << player->GetName() << "! You've been awarded " << player->GetLevel() * sConfigMgr->GetOption<uint32>("CustomStuff.LevelUpGold", 100) << " gold!";
+        ss << "Congrats on Level " << static_cast<int>(player->GetLevel()) << " " << player->GetName() << "! You've been awarded " << sConfigMgr->GetOption<uint32>("CustomStuff.LevelUpGold", DEFAULT_LEVEL_UP_GOLD) << " gold!";
         ChatHandler(player->GetSession()).SendNotification(SERVER_MSG_STRING, ss.str().c_str());
     }
 
     void ApplyAdditionalLevelUpBonuses(Player* player)
     {
-        player->ModifyMoney(player->GetLevel() * sConfigMgr->GetOption<uint32>("CustomStuff.LevelUpGold", 100) * GOLD);
+        player->ModifyMoney(sConfigMgr->GetOption<uint32>("CustomStuff.LevelUpGold", DEFAULT_LEVEL_UP_GOLD) * GOLD);
     }
 };
 
