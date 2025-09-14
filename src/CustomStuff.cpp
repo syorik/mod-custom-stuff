@@ -17,7 +17,7 @@ private:
     void RestorePlayerResources(Player* player)
     {
         player->SetHealth(player->GetMaxHealth());
-        Powers p = player->GetPowerType();
+        Powers p = player->getPowerType();
         player->SetPower(p, player->GetMaxPower(p));
     }
 };
