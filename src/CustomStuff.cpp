@@ -16,7 +16,7 @@ public:
     void OnPlayerFirstLogin(Player* player) override
     {
         if (sConfigMgr->GetOption<bool>("CustomStuff.Enable", false))
-            RestorePlayerResources(player);
+            ApplyStartingBonuses(player);
     }
 
 private:
