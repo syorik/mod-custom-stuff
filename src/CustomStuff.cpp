@@ -31,8 +31,8 @@ private:
 
     void ApplyStartingBonuses(Player* player)
     {
-        player->ModifyMoney(5000 * GOLD);
-        player->GiveLevel(20);
+        player->ModifyMoney(sConfigMgr->GetOption<uint32>("CustomStuff.StartingGold", 100) * GOLD);
+        player->GiveLevel(sConfigMgr->GetOption<uint32>("CustomStuff.StartingLevel", 20));
         player->AddItem(FROSTWEAVE_BAG, 4);
     }
 };
