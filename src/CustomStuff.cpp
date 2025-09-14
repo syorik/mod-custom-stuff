@@ -47,7 +47,9 @@ private:
 
     void SendCongratulationsMessage(Player* player)
     {
-        ChatHandler(player->GetSession()).PSendSysMessage("GZ %s!", player->GetName().c_str());
+        std::ostringstream ss;
+        ss << "Congrats on Level " << static_cast<int>(player->GetLevel()) << " " << player->GetName() << "! You've been awarded " << player->GetLevel() * sConfigMgr->GetOption<uint32>("CustomStuff.LevelUpGold", 100) << " gold!";
+        ChatHandler(player->GetSession()).SendNotification(SERVER_MSG_STRING, ss.str().c_str());
     }
 
     void ApplyAdditionalLevelUpBonuses(Player* player)
