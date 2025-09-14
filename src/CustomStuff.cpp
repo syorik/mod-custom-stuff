@@ -22,8 +22,10 @@ public:
 
     void OnPlayerLevelChanged(Player* player, uint8 oldLevel) override
     {
-        if (sConfigMgr->GetOption<bool>("CustomStuff.Enable", false))
+        if (sConfigMgr->GetOption<bool>("CustomStuff.Enable", false)) {
             SendCongratulationsMessage(player);
+            ApplyAdditionalLevelUpBonuses(player);
+        }
     }
 
 private:
@@ -46,6 +48,11 @@ private:
     void SendCongratulationsMessage(Player* player)
     {
         ChatHandler(player->GetSession()).PSendSysMessage("GZ %s!", player->GetName().c_str());
+    }
+
+    void ApplyAdditionalLevelUpBonuses(Player* player)
+    {
+        player->ModifyMoney(player->GetLevel() * sConfigMgr->GetOption<uint32>("CustomStuff.LevelUpGold", 100) * GOLD);
     }
 };
 
