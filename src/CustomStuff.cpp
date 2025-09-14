@@ -5,6 +5,8 @@
 #include "World.h"
 #include "WorldSession.h"
 
+using namespace Acore::ChatCommands;
+
 class CustomStuff : public PlayerScript
 {
 public:
