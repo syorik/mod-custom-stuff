@@ -130,6 +130,9 @@ private:
     const uint32 HEARTHSTONER_SPELL = 8690;
     const uint32 NO_PLACE_LIKE_HOME_SPELL = 39937;
 
+    const uint32 DEFAULT_STARTING_PROFFESSION_CAP = 150;
+    const uint32 DEFAULT_STARTING_PROFFESSION_VALUE = 75;
+
     bool IsModuleEnabled() {
         return sConfigMgr->GetOption<bool>("CustomStuff.Enable", false);
     }
@@ -155,8 +158,8 @@ private:
 
     void TeachAllProfessions(Player* player)
     {
-        uint16 cap = sConfigMgr->GetOption<uint16>("CustomStuff.StartingProffessionCap", 75);
-        uint16 value = sConfigMgr->GetOption<uint16>("CustomStuff.StartingProffessionValue", 75);
+        uint16 cap = sConfigMgr->GetOption<uint16>("CustomStuff.StartingProffessionCap", DEFAULT_STARTING_PROFFESSION_CAP);
+        uint16 value = sConfigMgr->GetOption<uint16>("CustomStuff.StartingProffessionValue", DEFAULT_STARTING_PROFFESSION_VALUE);
 
         for (auto const& p : kPrimaryProfs)
             TeachAndSetSkill(player, p, value, cap);
