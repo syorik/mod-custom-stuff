@@ -182,6 +182,7 @@ private:
                 player->RemoveCategoryCooldown(info->GetCategory());
             }
         }
+        player->SendClearCooldown(spellId, player);
     }
 };
 
