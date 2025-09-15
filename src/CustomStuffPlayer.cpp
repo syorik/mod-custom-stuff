@@ -178,7 +178,7 @@ private:
         player->RemoveSpellCooldown(spellId, true);
         if (SpellInfo const* info = sSpellMgr->GetSpellInfo(spellId))
         {
-            if (info->Category) {
+            if (info->GetCategory()) {
                 player->RemoveSpellCategoryCooldown(info->GetCategory(), true);
             }
         }
