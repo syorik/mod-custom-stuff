@@ -140,13 +140,11 @@ private:
 
     void TeachAllProfessions(Player* player)
     {
-        uint16 startingCap = static_cast<uint16>(sConfigMgr->GetOption<uint32>("CustomStuff.ProfsStartingCap", 75));
-
         for (auto const& p : kPrimaryProfs)
-            TeachAndSetSkill(player, p, startingCap);
+            TeachAndSetSkill(player, p, 75);
 
         for (auto const& p : kSecondaryProfs)
-            TeachAndSetSkill(player, p, startingCap);
+            TeachAndSetSkill(player, p, 75);
 
         ChatHandler(player->GetSession()).PSendSysMessage("All professions have been taught at Apprentice level.");
     }
