@@ -113,6 +113,13 @@ public:
         return true;
     }
 
+    void OnPlayerLogin(Player* player) override
+    {
+        if (IsModuleEnabled() && sConfigMgr->GetOption<bool>("CustomStuff.HearthstoneCooldownDisabled", false)) {
+            ResetHearthstoneCooldown(player);
+        }
+    }
+
 private:
     const uint32 FROSTWEAVE_BAG = 41599;
     const uint32 DEFAULT_STARTING_GOLD = 500;
@@ -161,8 +168,19 @@ private:
 
     void ResetHearthstoneCooldown(Player* player)
     {
-        player->RemoveSpellCooldown(HEARTHSTONER_SPELL, true);
-        player->RemoveSpellCooldown(NO_PLACE_LIKE_HOME_SPELL, true);
+        removeSpellCooldown(player, HEARTHSTONER_SPELL);
+        removeSpellCooldown(player, NO_PLACE_LIKE_HOME_SPELL);
+    }
+
+    void removeSpellCooldown(Player* player, uint32 spellId)
+    {
+        player->RemoveSpellCooldown(spellId, true);
+        if (SpellInfo const* info = sSpellMgr->GetSpellInfo(spellId))
+        {
+            if (info->Category) {
+                player->RemoveSpellCategoryCooldown(info->GetCategory(), true);
+            }
+        }
     }
 };
 
