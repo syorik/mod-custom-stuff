@@ -63,7 +63,7 @@ static const std::vector<Prof> kSecondaryProfs = {
 void LearnPlayerSpell(Player* player, uint32 spellId)
 {
     if (!player->HasSpell(spellId))
-        player->LearnSpell(spellId, false);
+        player->learnSpell(spellId, false);
 }
 
 void TeachAndSetSkill(Player* player, const Prof& p, uint16 cap)
