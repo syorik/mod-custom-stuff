@@ -110,7 +110,7 @@ public:
         if (IsModuleEnabled() && sConfigMgr->GetOption<bool>("CustomStuff.HearthstoneCooldownDisabled", false)) {
             ResetHearthstoneCooldown(player);
         }
-        return true
+        return true;
     }
 
 private:
