@@ -4,6 +4,7 @@
 #include "Chat.h"
 #include "World.h"
 #include "WorldSession.h"
+#include "SpellMgr.h"
 
 #include <sstream>
 #include <vector>
