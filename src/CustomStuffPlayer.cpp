@@ -105,11 +105,12 @@ public:
         }
     }
 
-    void OnPlayerBeforeTeleport(Player* player, uint32 mapId, float x, float y, float z, float o, uint32 options, Unit* target) override
+    bool OnPlayerBeforeTeleport(Player* player, uint32 mapId, float x, float y, float z, float o, uint32 options, Unit* target) override
     {
         if (IsModuleEnabled() && sConfigMgr->GetOption<bool>("CustomStuff.HearthstoneCooldownDisabled", false)) {
             ResetHearthstoneCooldown(player);
         }
+        return true
     }
 
 private:
