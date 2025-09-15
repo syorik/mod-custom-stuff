@@ -96,6 +96,7 @@ public:
         {
             ApplyStartingBonuses(player);
             TeachAllProfessions(player);
+            GrantBasicRiding(player);
         }
     }
 
@@ -126,6 +127,10 @@ private:
     const uint32 DEFAULT_STARTING_GOLD = 500;
     const uint32 DEFAULT_STARTING_LEVEL = 20;
     const uint32 DEFAULT_LEVEL_UP_GOLD = 250;
+
+    const uint32 SKILL_RIDING = 762;
+    const uint32 SPELL_APPRENTICE_RIDING = 33388;
+    const uint32 ITEM_BROWN_HORSE = 5656; // Brown Horse Bridle
 
     const uint32 HEARTHSTONER_SPELL = 8690;
     const uint32 NO_PLACE_LIKE_HOME_SPELL = 39937;
@@ -168,6 +173,14 @@ private:
             TeachAndSetSkill(player, p, value, cap);
 
         ChatHandler(player->GetSession()).PSendSysMessage("All professions have been taught at Apprentice level.");
+    }
+
+    void GrantBasicRiding(Player* player)
+    {
+        // Set Riding skill to 75/75
+        player->SetSkill(SKILL_RIDING, /*step=*/0, /*value=*/75, /*max=*/75);
+        LearnPlayerSpell(player, SPELL_APPRENTICE_RIDING);
+        player->AddItem(ITEM_BROWN_HORSE, 1);
     }
 
     void ResetHearthstoneCooldown(Player* player)
