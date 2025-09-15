@@ -19,7 +19,8 @@ public:
     {
         static ChatCommandTable moduleCommandTable =
         {
-            { "goto", HandleGotoCommand, SEC_PLAYER, Console::No }
+            { "goto", HandleGotoCommand, SEC_PLAYER, Console::No },
+            { "r", HandleRemoveResSicknessCommand, SEC_PLAYER, Console::No }
         };
 
         static ChatCommandTable commandTable =
@@ -28,6 +29,23 @@ public:
         };
 
         return commandTable;
+    }
+
+    static bool HandleRemoveResSicknessCommand(ChatHandler* handler, std::string /*args*/)
+    {
+        Player* player = handler->GetSession()->GetPlayer();
+
+        if (sConfigMgr->GetOption<bool>("CustomStuff.Enable", false) == false)
+        {
+            handler->SendSysMessage("CustomStuff module is disabled");
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        // Remove Resurrection Sickness (spell id 15007)
+        player->RemoveAurasDueToSpell(15007);
+        handler->SendSysMessage("Resurrection Sickness removed.");
+        return true;
     }
 
     static bool HandleGotoCommand(ChatHandler* handler, std::string args)
