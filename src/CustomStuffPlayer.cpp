@@ -124,7 +124,7 @@ public:
 private:
     const uint32 FROSTWEAVE_BAG = 41599;
     const uint32 DEFAULT_STARTING_GOLD = 500;
-    const uint32 DEFAULT_STARTING_LEVEL = 15;
+    const uint32 DEFAULT_STARTING_LEVEL = 20;
     const uint32 DEFAULT_LEVEL_UP_GOLD = 250;
 
     const uint32 HEARTHSTONER_SPELL = 8690;
