@@ -6,3 +6,4 @@ CustomStuff.StartingLevel = 15
 CustomStuff.LevelUpGold = 250
 CustomStuff.StartingProffessionCap = 75
 CustomStuff.StartingProffessionValue = 0
+CustomStuff.HearthstoneCooldownDisabled = 1

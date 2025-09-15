@@ -84,7 +84,8 @@ public:
 
     void OnPlayerLeaveCombat(Player* player) override
     {
-        if (IsModuleEnabled())
+        Map *map = player->GetMap();
+        if (IsModuleEnabled() && (map->IsDungeon() || map->IsRaid()))
             RestorePlayerResources(player);
     }
 
@@ -104,11 +105,21 @@ public:
         }
     }
 
+    void OnPlayerBeforeTeleport(Player* player, uint32 mapId, float x, float y, float z, float o, uint32 options, Unit* target) override
+    {
+        if (IsModuleEnabled() && sConfigMgr->GetOption<bool>("CustomStuff.HearthstoneCooldownDisabled", false)) {
+            ResetHearthstoneCooldown(player);
+        }
+    }
+
 private:
     const uint32 FROSTWEAVE_BAG = 41599;
     const uint32 DEFAULT_STARTING_GOLD = 500;
     const uint32 DEFAULT_STARTING_LEVEL = 15;
     const uint32 DEFAULT_LEVEL_UP_GOLD = 250;
+
+    const uint32 HEARTHSTONER_SPELL = 8690;
+    const uint32 NO_PLACE_LIKE_HOME_SPELL = 39937;
 
     void IsModuleEnabled() {
         return sConfigMgr->GetOption<bool>("CustomStuff.Enable", false);
@@ -116,12 +127,9 @@ private:
 
     void RestorePlayerResources(Player* player)
     {
-        Map *map = player->GetMap();
-        if (map->IsDungeon() || map->IsRaid()) {
-            player->SetHealth(player->GetMaxHealth());
-            Powers p = player->getPowerType();
-            player->SetPower(p, player->GetMaxPower(p));
-        }
+        player->SetHealth(player->GetMaxHealth());
+        Powers p = player->getPowerType();
+        player->SetPower(p, player->GetMaxPower(p));
     }
 
     void ApplyStartingBonuses(Player* player)
@@ -148,6 +156,12 @@ private:
             TeachAndSetSkill(player, p, value, cap);
 
         ChatHandler(player->GetSession()).PSendSysMessage("All professions have been taught at Apprentice level.");
+    }
+
+    void ResetHearthstoneCooldown(Player* player)
+    {
+        player->RemoveSpellCooldown(HEARTHSTONER_SPELL, true);
+        player->RemoveSpellCooldown(NO_PLACE_LIKE_HOME_SPELL, true);
     }
 };
 
