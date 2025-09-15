@@ -179,7 +179,7 @@ private:
         if (SpellInfo const* info = sSpellMgr->GetSpellInfo(spellId))
         {
             if (info->GetCategory()) {
-                player->RemoveSpellCategoryCooldown(info->GetCategory(), true);
+                player->RemoveCategoryCooldown(info->GetCategory(), true);
             }
         }
     }
