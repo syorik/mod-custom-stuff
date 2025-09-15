@@ -122,7 +122,7 @@ private:
     const uint32 HEARTHSTONER_SPELL = 8690;
     const uint32 NO_PLACE_LIKE_HOME_SPELL = 39937;
 
-    void IsModuleEnabled() {
+    bool IsModuleEnabled() {
         return sConfigMgr->GetOption<bool>("CustomStuff.Enable", false);
     }
 
