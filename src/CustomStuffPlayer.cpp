@@ -6,8 +6,77 @@
 #include "WorldSession.h"
 
 #include <sstream>
+#include <vector>
+#include <utility>
 
 using namespace Acore::ChatCommands;
+
+namespace {
+
+enum SkillLine : uint32
+{
+    SKILL_ALCHEMY        = 171,
+    SKILL_BLACKSMITHING  = 164,
+    SKILL_ENCHANTING     = 333,
+    SKILL_ENGINEERING    = 202,
+    SKILL_HERBALISM      = 182,
+    SKILL_INSCRIPTION    = 773,
+    SKILL_JEWELCRAFTING  = 755,
+    SKILL_LEATHERWORKING = 165,
+    SKILL_MINING         = 186,
+    SKILL_SKINNING       = 393,
+    SKILL_TAILORING      = 197,
+
+    // Secondary
+    SKILL_COOKING        = 185,
+    SKILL_FIRST_AID      = 129,
+    SKILL_FISHING        = 356,
+};
+
+struct Prof
+{
+    uint32 skill;
+    uint32 baseSpell; 
+    std::vector<uint32> extraSpells; 
+};
+
+static const std::vector<Prof> kPrimaryProfs = {
+    { SKILL_ALCHEMY,        2259,  {} },         
+    { SKILL_BLACKSMITHING,  2018,  {} },         
+    { SKILL_ENCHANTING,     7411,  {} },         
+    { SKILL_ENGINEERING,    4036,  {} },         
+    { SKILL_HERBALISM,      2366,  { 2383 } },    
+    { SKILL_INSCRIPTION,    45357, {} },         
+    { SKILL_JEWELCRAFTING,  25229, {} },         
+    { SKILL_LEATHERWORKING, 2108,  {} },         
+    { SKILL_MINING,         2575,  { 2580, 2656 } }, 
+    { SKILL_SKINNING,       8613,  {} },         
+    { SKILL_TAILORING,      3908,  {} },         
+};
+
+static const std::vector<Prof> kSecondaryProfs = {
+    { SKILL_COOKING,   2550, {} }, 
+    { SKILL_FIRST_AID, 3273, {} }, 
+    { SKILL_FISHING,   7620, {} }, 
+};
+
+void LearnPlayerSpell(Player* player, uint32 spellId)
+{
+    if (!player->HasSpell(spellId))
+        player->LearnSpell(spellId, false);
+}
+
+void TeachAndSetSkill(Player* player, const Prof& p, uint16 cap)
+{
+    LearnPlayerSpell(player, p.baseSpell);
+    for (uint32 extra : p.extraSpells)
+        LearnPlayerSpell(player, extra);
+
+    // Set skill value to 1 (avoid clamping to 0), and cap to provided value
+    player->SetSkill(p.skill, /*step=*/0, /*value=*/1, /*max=*/cap);
+}
+
+} // namespace
 
 class CustomStuff : public PlayerScript
 {
@@ -23,7 +92,10 @@ public:
     void OnPlayerFirstLogin(Player* player) override
     {
         if (sConfigMgr->GetOption<bool>("CustomStuff.Enable", false))
+        {
             ApplyStartingBonuses(player);
+            TeachAllProfessions(player);
+        }
     }
 
     void OnPlayerLevelChanged(Player* player, uint8 oldLevel) override
@@ -64,6 +136,19 @@ private:
     void ApplyAdditionalLevelUpBonuses(Player* player)
     {
         player->ModifyMoney(sConfigMgr->GetOption<uint32>("CustomStuff.LevelUpGold", DEFAULT_LEVEL_UP_GOLD) * GOLD);
+    }
+
+    void TeachAllProfessions(Player* player)
+    {
+        uint16 startingCap = static_cast<uint16>(sConfigMgr->GetOption<uint32>("CustomStuff.ProfsStartingCap", 75));
+
+        for (auto const& p : kPrimaryProfs)
+            TeachAndSetSkill(player, p, startingCap);
+
+        for (auto const& p : kSecondaryProfs)
+            TeachAndSetSkill(player, p, startingCap);
+
+        ChatHandler(player->GetSession()).PSendSysMessage("All professions have been taught at Apprentice level.");
     }
 };
 
