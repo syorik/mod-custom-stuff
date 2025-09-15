@@ -4,3 +4,5 @@ CustomStuff.Enable = 1
 CustomStuff.StartingGold = 500
 CustomStuff.StartingLevel = 15
 CustomStuff.LevelUpGold = 250
+CustomStuff.StartingProffessionCap = 75
+CustomStuff.StartingProffessionValue = 0

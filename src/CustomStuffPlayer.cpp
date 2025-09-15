@@ -66,17 +66,16 @@ void LearnPlayerSpell(Player* player, uint32 spellId)
         player->learnSpell(spellId, false);
 }
 
-void TeachAndSetSkill(Player* player, const Prof& p, uint16 cap)
+void TeachAndSetSkill(Player* player, const Prof& p, uint16 value, uint16 cap)
 {
     LearnPlayerSpell(player, p.baseSpell);
     for (uint32 extra : p.extraSpells)
         LearnPlayerSpell(player, extra);
 
-    // Set skill value to 1 (avoid clamping to 0), and cap to provided value
-    player->SetSkill(p.skill, /*step=*/0, /*value=*/1, /*max=*/cap);
+    player->SetSkill(p.skill, /*step=*/0, /*value=*/value, /*max=*/cap);
 }
 
-} // namespace
+}
 
 class CustomStuff : public PlayerScript
 {
@@ -85,13 +84,13 @@ public:
 
     void OnPlayerLeaveCombat(Player* player) override
     {
-        if (sConfigMgr->GetOption<bool>("CustomStuff.Enable", false))
+        if (IsModuleEnabled())
             RestorePlayerResources(player);
     }
 
     void OnPlayerFirstLogin(Player* player) override
     {
-        if (sConfigMgr->GetOption<bool>("CustomStuff.Enable", false))
+        if (IsModuleEnabled())
         {
             ApplyStartingBonuses(player);
             TeachAllProfessions(player);
@@ -100,8 +99,7 @@ public:
 
     void OnPlayerLevelChanged(Player* player, uint8 oldLevel) override
     {
-        if (sConfigMgr->GetOption<bool>("CustomStuff.Enable", false)) {
-            SendCongratulationsMessage(player);
+        if (IsModuleEnabled()) {
             ApplyAdditionalLevelUpBonuses(player);
         }
     }
@@ -112,11 +110,18 @@ private:
     const uint32 DEFAULT_STARTING_LEVEL = 15;
     const uint32 DEFAULT_LEVEL_UP_GOLD = 250;
 
+    void IsModuleEnabled() {
+        return sConfigMgr->GetOption<bool>("CustomStuff.Enable", false);
+    }
+
     void RestorePlayerResources(Player* player)
     {
-        player->SetHealth(player->GetMaxHealth());
-        Powers p = player->getPowerType();
-        player->SetPower(p, player->GetMaxPower(p));
+        Map *map = player->GetMap();
+        if (map->IsDungeon() || map->IsRaid()) {
+            player->SetHealth(player->GetMaxHealth());
+            Powers p = player->getPowerType();
+            player->SetPower(p, player->GetMaxPower(p));
+        }
     }
 
     void ApplyStartingBonuses(Player* player)
@@ -126,13 +131,6 @@ private:
         player->AddItem(FROSTWEAVE_BAG, 4);
     }
 
-    void SendCongratulationsMessage(Player* player)
-    {
-        std::ostringstream ss;
-        ss << "Congrats on Level " << static_cast<int>(player->GetLevel()) << " " << player->GetName() << "! You've been awarded " << sConfigMgr->GetOption<uint32>("CustomStuff.LevelUpGold", DEFAULT_LEVEL_UP_GOLD) << " gold!";
-        ChatHandler(player->GetSession()).SendNotification(SERVER_MSG_STRING, ss.str().c_str());
-    }
-
     void ApplyAdditionalLevelUpBonuses(Player* player)
     {
         player->ModifyMoney(sConfigMgr->GetOption<uint32>("CustomStuff.LevelUpGold", DEFAULT_LEVEL_UP_GOLD) * GOLD);
@@ -140,11 +138,14 @@ private:
 
     void TeachAllProfessions(Player* player)
     {
+        uint16 cap = sConfigMgr->GetOption<uint16>("CustomStuff.StartingProffessionCap", 75);
+        uint16 value = sConfigMgr->GetOption<uint16>("CustomStuff.StartingProffessionValue", 75);
+
         for (auto const& p : kPrimaryProfs)
-            TeachAndSetSkill(player, p, 75);
+            TeachAndSetSkill(player, p, value, cap);
 
         for (auto const& p : kSecondaryProfs)
-            TeachAndSetSkill(player, p, 75);
+            TeachAndSetSkill(player, p, value, cap);
 
         ChatHandler(player->GetSession()).PSendSysMessage("All professions have been taught at Apprentice level.");
     }
