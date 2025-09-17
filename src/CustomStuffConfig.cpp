@@ -11,12 +11,12 @@ void CustomStuffConfig::Reload()
     enable = sConfigMgr->GetOption<bool>("CustomStuff.Enable", false);
     hearthstoneCooldownDisabled = sConfigMgr->GetOption<bool>("CustomStuff.HearthstoneCooldownDisabled", false);
 
-    startingGold = sConfigMgr->GetOption<uint32>("CustomStuff.StartingGold", 500u);
-    startingLevel = sConfigMgr->GetOption<uint8>("CustomStuff.StartingLevel", static_cast<uint8>(20));
-    levelUpGold = sConfigMgr->GetOption<uint32>("CustomStuff.LevelUpGold", 250u);
+    startingGold = sConfigMgr->GetOption<uint32_t>("CustomStuff.StartingGold", 500u);
+    startingLevel = sConfigMgr->GetOption<uint8_t>("CustomStuff.StartingLevel", static_cast<uint8_t>(20));
+    levelUpGold = sConfigMgr->GetOption<uint32_t>("CustomStuff.LevelUpGold", 250u);
 
-    startingProfessionCap = sConfigMgr->GetOption<uint16>("CustomStuff.StartingProffessionCap", static_cast<uint16>(150));
-    startingProfessionValue = sConfigMgr->GetOption<uint16>("CustomStuff.StartingProffessionValue", static_cast<uint16>(75));
+    startingProfessionCap = sConfigMgr->GetOption<uint16_t>("CustomStuff.StartingProffessionCap", static_cast<uint16_t>(150));
+    startingProfessionValue = sConfigMgr->GetOption<uint16_t>("CustomStuff.StartingProffessionValue", static_cast<uint16_t>(75));
 }
 
 
