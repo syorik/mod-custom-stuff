@@ -5,6 +5,7 @@
 #include "World.h"
 #include "WorldSession.h"
 #include "SpellMgr.h"
+#include "CustomStuffConfig.h"
 
 #include <sstream>
 #include <vector>
@@ -109,7 +110,7 @@ public:
 
     bool OnPlayerBeforeTeleport(Player* player, uint32 mapId, float x, float y, float z, float o, uint32 options, Unit* target) override
     {
-        if (IsModuleEnabled() && sConfigMgr->GetOption<bool>("CustomStuff.HearthstoneCooldownDisabled", false)) {
+        if (IsModuleEnabled() && CustomStuffConfig::Get().hearthstoneCooldownDisabled) {
             ResetHearthstoneCooldown(player);
         }
         return true;
@@ -117,7 +118,7 @@ public:
 
     void OnPlayerLogin(Player* player) override
     {
-        if (IsModuleEnabled() && sConfigMgr->GetOption<bool>("CustomStuff.HearthstoneCooldownDisabled", false)) {
+        if (IsModuleEnabled() && CustomStuffConfig::Get().hearthstoneCooldownDisabled) {
             ResetHearthstoneCooldown(player);
         }
     }
@@ -138,9 +139,7 @@ private:
     const uint32 DEFAULT_STARTING_PROFFESSION_CAP = 150;
     const uint32 DEFAULT_STARTING_PROFFESSION_VALUE = 75;
 
-    bool IsModuleEnabled() {
-        return sConfigMgr->GetOption<bool>("CustomStuff.Enable", false);
-    }
+    bool IsModuleEnabled() { return CustomStuffConfig::Get().enable; }
 
     void RestorePlayerResources(Player* player)
     {
@@ -151,11 +150,11 @@ private:
 
     void ApplyStartingBonuses(Player* player)
     {
-        player->ModifyMoney(sConfigMgr->GetOption<uint32>("CustomStuff.StartingGold", DEFAULT_STARTING_GOLD) * GOLD);
+        player->ModifyMoney(CustomStuffConfig::Get().startingGold * GOLD);
         player->AddItem(FROSTWEAVE_BAG, 4);
 
         uint8 currentLevel = player->GetLevel();
-        uint8 startingLevel = sConfigMgr->GetOption<uint8>("CustomStuff.StartingLevel", DEFAULT_STARTING_LEVEL);
+        uint8 startingLevel = CustomStuffConfig::Get().startingLevel;
 
         if (currentLevel < startingLevel)
         {
@@ -165,13 +164,13 @@ private:
 
     void ApplyAdditionalLevelUpBonuses(Player* player)
     {
-        player->ModifyMoney(sConfigMgr->GetOption<uint32>("CustomStuff.LevelUpGold", DEFAULT_LEVEL_UP_GOLD) * GOLD);
+        player->ModifyMoney(CustomStuffConfig::Get().levelUpGold * GOLD);
     }
 
     void TeachAllProfessions(Player* player)
     {
-        uint16 cap = sConfigMgr->GetOption<uint16>("CustomStuff.StartingProffessionCap", DEFAULT_STARTING_PROFFESSION_CAP);
-        uint16 value = sConfigMgr->GetOption<uint16>("CustomStuff.StartingProffessionValue", DEFAULT_STARTING_PROFFESSION_VALUE);
+        uint16 cap = CustomStuffConfig::Get().startingProfessionCap;
+        uint16 value = CustomStuffConfig::Get().startingProfessionValue;
 
         for (auto const& p : kPrimaryProfs)
             TeachAndSetSkill(player, p, value, cap);

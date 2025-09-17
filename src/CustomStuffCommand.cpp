@@ -1,6 +1,7 @@
 #include "ScriptMgr.h"
 #include "Player.h"
 #include "Config.h"
+#include "CustomStuffConfig.h"
 #include "Chat.h"
 #include "World.h"
 #include "WorldSession.h"
@@ -35,7 +36,7 @@ public:
     {
         Player* player = handler->GetSession()->GetPlayer();
 
-        if (sConfigMgr->GetOption<bool>("CustomStuff.Enable", false) == false)
+        if (CustomStuffConfig::Get().enable == false)
         {
             handler->SendSysMessage("CustomStuff module is disabled");
             handler->SetSentErrorMessage(true);
@@ -52,7 +53,7 @@ public:
     {
         Player* player = handler->GetSession()->GetPlayer();
 
-        if (sConfigMgr->GetOption<bool>("CustomStuff.Enable", false) == false)
+        if (CustomStuffConfig::Get().enable == false)
         {
             handler->SendSysMessage("CustomStuff module is disabled");
             handler->SetSentErrorMessage(true);
