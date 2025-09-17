@@ -152,8 +152,15 @@ private:
     void ApplyStartingBonuses(Player* player)
     {
         player->ModifyMoney(sConfigMgr->GetOption<uint32>("CustomStuff.StartingGold", DEFAULT_STARTING_GOLD) * GOLD);
-        player->GiveLevel(sConfigMgr->GetOption<uint32>("CustomStuff.StartingLevel", DEFAULT_STARTING_LEVEL));
         player->AddItem(FROSTWEAVE_BAG, 4);
+
+        uint8 currentLevel = player->GetLevel();
+        uint8 startingLevel = sConfigMgr->GetOption<uint8>("CustomStuff.StartingLevel", DEFAULT_STARTING_LEVEL);
+
+        if (currentLevel < startingLevel)
+        {
+            player->GiveLevel(startingLevel);
+        }
     }
 
     void ApplyAdditionalLevelUpBonuses(Player* player)
